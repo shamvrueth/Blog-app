@@ -37,12 +37,7 @@ app.use(passport.session())
 
 
 app.get("/", (req, res) => {
-  if (req.isAuthenticated()){
-    res.render("home.ejs");
-  }
-  else{
-    res.redirect("/login");
-  }
+  res.render("home.ejs");
 });
 
 app.get("/login", (req, res) => {
@@ -98,12 +93,17 @@ app.post(
 
 // Route to render the main page
 app.get("/home", async (req, res) => {
-  try {
-    const response = await axios.get(`${API_URL}/posts`);
-    console.log(response);
-    res.render("index.ejs", { posts: response.data });
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching posts" });
+  if (req.isAuthenticated()){
+    try {
+      const response = await axios.get(`${API_URL}/posts`);
+      console.log(response);
+      res.render("index.ejs", { posts: response.data });
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching posts" });
+    }
+  }
+  else{
+    res.redirect("/login");
   }
 });
 
