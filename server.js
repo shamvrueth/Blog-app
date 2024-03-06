@@ -37,7 +37,12 @@ app.use(passport.session())
 
 
 app.get("/", (req, res) => {
-  res.render("home.ejs");
+  if (req.isAuthenticated()){
+    res.render("home.ejs");
+  }
+  else{
+    res.redirect("/login");
+  }
 });
 
 app.get("/login", (req, res) => {
